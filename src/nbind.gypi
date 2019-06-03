@@ -60,12 +60,14 @@
 			],
 
 			"cflags": [
-				"-O3"
+				"-O3",
+				"-fPIC"
 			],
 
 			"cflags_cc": [
 				"-std=c++11",
-				"-fexceptions"
+				"-fexceptions",
+				"-fPIC"
 			],
 
 			"cflags_cc!": [

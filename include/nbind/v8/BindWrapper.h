@@ -213,8 +213,8 @@ public:
 	}
 
 	static void wrapPtr(const Nan::FunctionCallbackInfo<v8::Value> &nanArgs) {
-		auto flags = static_cast<TypeFlags>(nanArgs[1]->Uint32Value());
-		void *ptr = v8::Handle<v8::External>::Cast(nanArgs[0])->Value();
+		auto flags = static_cast<TypeFlags>(Nan::To<unsigned int>(nanArgs[1]).FromJust());
+		void *ptr = v8::Local<v8::External>::Cast(nanArgs[0])->Value();
 
 		if((flags & TypeFlags::refMask) == TypeFlags::isSharedPtr) {
 			auto *ptrShared = static_cast<std::shared_ptr<Bound> *>(ptr);

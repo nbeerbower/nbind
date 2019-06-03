@@ -20,7 +20,7 @@ v8::Local<v8::Value> makeTypeError(
 	(void)args; // Silence compiler warning about unused parameter.
 
 	v8::Local<v8::Value> err = Nan::TypeError("Type mismatch");
-	v8::Local<v8::Object> errObj = err->ToObject();
+	v8::Local<v8::Object> errObj = Nan::To<v8::Object>(err).ToLocalChecked();
 	// v8::Local<v8::Array> typeArray = Nan::New<v8::Array>(count);
 	v8::Local<v8::Array> flagArray = Nan::New<v8::Array>(count);
 
@@ -53,21 +53,20 @@ template<typename ArgList> struct Checker;
 template<typename... Args>
 struct Checker<TypeList<Args...>> {
 
-	template<typename... DummyArgs> static inline void pass(DummyArgs&&...) {}
+	static bool booleanAnd(bool flag) {
+		return(flag);
+	}
 
-	static inline bool booleanAndTo(bool valid, bool &validFlag) {
-		validFlag &= valid;
-		return(valid);
+	template <typename... Rest>
+	static bool booleanAnd(bool flag, Rest... rest) {
+		return(flag & booleanAnd(rest...));
 	}
 
 	template <typename NanArgs>
 	static bool typesAreValid(NanArgs &args) {
-		bool validFlag = true;
 		(void)args; // Silence possible compiler warning about unused parameter.
 
-		pass(booleanAndTo(Args::checkType(args), validFlag)...);
-
-		return(validFlag);
+		return(booleanAnd(Args::checkType(args)..., true));
 	}
 
 	template <typename NanArgs>

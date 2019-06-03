@@ -241,7 +241,7 @@ static void nop(const Nan::FunctionCallbackInfo<v8::Value> &args) {
 	args.GetReturnValue().Set(Nan::Undefined());
 }
 
-static void initModule(Handle<Object> exports) {
+static void initModule(Local<Object> exports) {
 	SignatureParam *param;
 
 	for(auto &func : getFunctionList()) {
@@ -255,7 +255,7 @@ static void initModule(Handle<Object> exports) {
 			Nan::New<v8::External>(param)
 		);
 
-		Local<v8::Function> jsFunction = functionTemplate->GetFunction();
+		Local<v8::Function> jsFunction = Nan::GetFunction(functionTemplate).ToLocalChecked();
 
 		exports->Set(
 			Nan::New<String>(func.getName()).ToLocalChecked(),
